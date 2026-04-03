@@ -16,6 +16,12 @@ npm run build
 sudo npm install -g .
 ```
 
+### Quick Setup & API Keys
+To use this tool, you will need a few API keys. Here are the recommended affordable options:
+- **LLM**: [DeepSeek API](https://platform.deepseek.com/) (Extremely affordable and high quality) or [OpenAI API](https://platform.openai.com/).
+- **Scraper**: [Jina Reader API](https://jina.ai/reader/) (Free tier available, used to extract job descriptions).
+- **Local Option**: [Ollama](https://ollama.com/) (Run LLMs locally for 100% privacy and zero cost).
+
 ### Development
 ```bash
 npm run dev
