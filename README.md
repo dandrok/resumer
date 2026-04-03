@@ -30,6 +30,18 @@ Simply run `resumer` (or `npm run dev`) to start the interactive wizard.
 3. **Interview**: Answer a few questions about missing skills to help the AI refine your resume without hallucinating.
 4. **Result**: Your tailored resume will be saved as `your-cv_tailored.pdf` in the same directory.
 
+## Security & Privacy
+- **Local Storage**: Your API keys are stored only on your local machine using the [`conf`](https://github.com/sindresorhus/conf) library. They are saved in your system's standard config directory (e.g., `~/.config/resumer-nodejs/`).
+- **How it works**: The app initializes a local JSON file to persist your settings across sessions:
+  ```typescript
+  // src/config/index.ts
+  export const config = new Conf<Config>({
+    projectName: 'resumer',
+    schema
+  });
+  ```
+- **Direct Connection**: The app communicates directly from your machine to the AI providers (OpenAI, DeepSeek, or your local Ollama). There is no "middleman" server tracking your requests or keys.
+
 ## Tech Stack
 - **Ink**: React-based Terminal UI.
 - **Vercel AI SDK**: Unified interface for DeepSeek, OpenAI, and Ollama.
