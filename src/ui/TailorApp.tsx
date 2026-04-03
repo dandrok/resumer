@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { Box, Text, useApp, Spacer } from 'ink';
-import SpinnerImport from 'ink-spinner';
-import TextInputImport from 'ink-text-input';
+import Spinner from 'ink-spinner';
+import TextInput from 'ink-text-input';
 import { useTailorFlow } from './useTailorFlow';
 
-const Spinner = (SpinnerImport as any).default || SpinnerImport;
-const TextInput = (TextInputImport as any).default || TextInputImport;
 
 type Props = {
   resumePath: string;
