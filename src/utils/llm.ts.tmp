@@ -1,0 +1,25 @@
+import axios from 'axios';
+import { createOllama } from 'ollama-ai-provider';
+import { config } from '../config/index.ts';
+
+export const getLlm = () => {
+  const preferredModel = config.get('preferredModel');
+
+  if (preferredModel === 'deepseek') {
+    const apiKey = config.get('llmApiKey');
+    if (!apiKey) throw new Error('DeepSeek API Key not found.');
+
+    // We'll wrap axios to mimic the generateText return or just use it directly
+    // But to keep it simple and compatible with our current code, 
+    // let's try to fix the OpenAI provider one last time with a very specific base.
+    
+    const { createOpenAI } = require('@ai-sdk/openai');
+    const deepseek = createOpenAI({
+      apiKey: apiKey,
+      baseURL: 'https://api.deepseek.com/v1',
+    });
+    return deepseek('deepseek-chat');
+  }
+  
+  // ... (rest of the providers)
+};
