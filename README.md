@@ -15,7 +15,7 @@ AI-Powered CLI/TUI Resume Tailor.
    ```
 
 ## Status
-- **DeepSeek API**: Fully tested and working with direct `axios` implementation.
+- **DeepSeek API**: Fully tested and working.
 - **OpenAI / Ollama**: Integrated but currently **untested**. Use with caution as their API response handling might need minor tweaks compared to the DeepSeek direct implementation.
 - **Jina Reader**: Used as the primary scraping method. No local fallback (like Crawlee) is currently implemented to keep the tool simple and low-resource.
 

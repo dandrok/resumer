@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { parsePdf } from '../utils/pdf.ts';
-import { scrapeJobDescription } from '../utils/scraper.ts';
-import { getLlm } from '../utils/llm.ts';
+import { parsePdf } from '../utils/pdf';
+import { scrapeJobDescription } from '../utils/scraper';
+import { getLlm } from '../utils/llm';
 import { generateText } from 'ai';
 import { z } from 'zod';
 import fs from 'fs';
@@ -114,7 +114,7 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
           `;
 
           const { text: markdown } = await generateText({ model, prompt });
-          
+
           const pdfResult = await mdToPdf({ content: markdown }, {
             stylesheet: ['https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css'],
             body_class: ['markdown-body'],
