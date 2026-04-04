@@ -7,6 +7,8 @@ import { z } from 'zod';
 import fs from 'fs';
 import { mdToPdf } from 'md-to-pdf';
 
+import { resumeCss } from '../assets/resumeCss';
+
 export type Phase = 'extracting' | 'analyzing' | 'interviewing' | 'generating' | 'done' | 'error';
 
 export interface MissingSkill {
@@ -93,34 +95,48 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
           const answersStr = Object.entries(userAnswers).map(([s, a]) => `- ${s}: ${a}`).join('\n');
           const prompt = `
             You are a professional resume writer. Rewrite the provided Resume to better match the Job Description.
-            
+
             Rules:
             1. Use Markdown format.
             2. Focus on keywords from the Job Description.
             3. Incorporate the user's answers below to bridge missing gaps.
-            4. DO NOT invent any facts or experience not found in the original Resume or the User Answers.
-            5. Use a clean, professional structure (Header, Summary, Experience, Education, Skills).
+            4. HIGHLIGHT MATCHES: Use bolding (**keyword**) for the most important technologies, skills, and requirements mentioned in the Job Description when they appear in your rewritten text. This helps recruiters scan the CV faster.
+            5. DO NOT invent any facts or experience not found in the original Resume or the User Answers.
+            6. Use the following strict semantic structure:
+               - H1 (# Name)
+               - Paragraph under H1 for contact info (Email | LinkedIn | GitHub | Phone Number). It MUST be centered.
+               - H2 (## SECTION NAME) for sections: SUMMARY, EXPERIENCE, SKILLS. Do NOT include an Education section.
+               - H3 (### Job Title) with dates and location on the right using bolding (e.g., ### Senior Engineer **2020 - Present**)
+               - H4 (#### Company Name)
+               - Unordered lists (-) for experience bullets. Focus on impact and tech stack.
+               - SKILLS CATEGORIZATION: The Skills section MUST be broken down into the following specific categories (use triple asterisks for labels):
+                 - ***Languages & Core Tech:***
+                 - ***Frontend Ecosystem:***
+                 - ***Architecture & Best Practices:***
+                 - ***Dev Env & AI Tooling:***
+                 - ***Testing & CI/CD:***
+                 - ***Working Knowledge:***
+                 - ***Spoken Languages:***
+               - Each category should be a single paragraph or list item, NOT a full list, to save space.
             
             Original Resume:
             ${cvText}
-            
+
             Job Description:
             ${jobText}
-            
+
             User Answers about missing skills:
             ${answersStr}
-            
+
             Output ONLY the Markdown.
           `;
-
           const { text: markdown } = await generateText({ model, prompt });
 
           const pdfResult = await mdToPdf({ content: markdown }, {
-            stylesheet: ['https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css'],
-            body_class: ['markdown-body'],
-            pdf_options: { format: 'A4', margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' } }
+            css: resumeCss,
+            body_class: [], // Clear default classes
+            pdf_options: { format: 'A4', printBackground: true, margin: { top: '0', right: '0', bottom: '0', left: '0' } } // Handled by @page
           });
-
           fs.writeFileSync(resumePath.replace('.pdf', '_tailored.pdf'), pdfResult.content);
           setPhase('done');
           setTimeout(() => exit(), 2000);

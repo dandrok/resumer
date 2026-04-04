@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai';
-import { createOllama } from 'ollama-ai-provider';
+import { createOllama } from 'ollama-ai-provider-v2';
 import { createDeepSeek } from '@ai-sdk/deepseek';
 import { LanguageModel } from 'ai';
 import { config } from '../config';
