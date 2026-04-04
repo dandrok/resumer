@@ -10,7 +10,7 @@ export const resumeCss = `
 }
 
 @page {
-  margin: 10mm 20mm 0mm 20mm; /* Top: 10mm, Bottom: 0mm */
+  margin: 8mm 16mm 0mm 16mm; /* Bottom: 0mm */
   size: A4;
 }
 

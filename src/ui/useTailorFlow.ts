@@ -100,8 +100,12 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
             1. Use Markdown format.
             2. Focus on keywords from the Job Description.
             3. Incorporate the user's answers below to bridge missing gaps.
-            4. HIGHLIGHT MATCHES: Use bolding (**keyword**) for the most important technologies, skills, and requirements mentioned in the Job Description when they appear in your rewritten text. This helps recruiters scan the CV faster.
-            5. DO NOT invent any facts or experience not found in the original Resume or the User Answers.
+            4. STRICT ANTI-HALLUCINATION: 
+               - If a skill was identified as missing and the user provided an empty answer (or said no), you MUST NOT include that skill in the resume.
+               - DO NOT invent any facts, projects, or experience not found in the original Resume or the User Answers.
+               - NEVER claim the user is an "expert" or "proficient" in something if it is not explicitly mentioned in the source material.
+               - Your primary job is to REPHRASE existing experience to match job keywords, not to ADD new experience from the job offer.
+            5. HIGHLIGHT MATCHES: Use bolding (**keyword**) for the most important technologies, skills, and requirements mentioned in the Job Description when they appear in your rewritten text. This helps recruiters scan the CV faster.
             6. Use the following strict semantic structure:
                - H1 (# Name)
                - Paragraph under H1 for contact info (Email | LinkedIn | GitHub | Phone Number). It MUST be centered.
@@ -109,15 +113,12 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
                - H3 (### Job Title) with dates and location on the right using bolding (e.g., ### Senior Engineer **2020 - Present**)
                - H4 (#### Company Name)
                - Unordered lists (-) for experience bullets. Focus on impact and tech stack.
-               - SKILLS CATEGORIZATION: The Skills section MUST be broken down into the following specific categories (use triple asterisks for labels):
-                 - ***Languages & Core Tech:***
-                 - ***Frontend Ecosystem:***
-                 - ***Architecture & Best Practices:***
-                 - ***Dev Env & AI Tooling:***
-                 - ***Testing & CI/CD:***
-                 - ***Working Knowledge:***
-                 - ***Spoken Languages:***
-               - Each category should be a single paragraph or list item, NOT a full list, to save space.
+               - DYNAMIC SKILLS SECTION: Do not use a fixed list of categories. Instead:
+                 - Select the 4-5 most relevant skill categories for this specific job offer.
+                 - Prioritize skills mentioned in the Job Description and those confirmed by the user in the wizard.
+                 - ALWAYS include a category for Spoken Languages.
+                 - Format each category label with triple asterisks (e.g., ***Languages & Core:***) followed by a concise, comma-separated list of skills.
+                 - Use unordered list items (-) for each category to ensure clean vertical separation and readability.
             
             Original Resume:
             ${cvText}
