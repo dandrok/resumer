@@ -4,3 +4,6 @@ dist/
 .DS_Store
 .env
 tsup.config.ts.timestamp-*
+.codex
+AGENTS.md
+
