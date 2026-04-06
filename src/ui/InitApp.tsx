@@ -3,9 +3,11 @@ import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
 import { config } from '../config';
+import { getProviderDefinition, llmProviders } from '../llm/providers';
+import type { LlmProviderId } from '../llm/types';
 import { ScreenShell } from './ScreenShell';
 
-type SettingsStep = 'menu' | 'llm-provider' | 'llm-key' | 'ollama-url' | 'jina-key' | 'done';
+type SettingsStep = 'menu' | 'llm-provider' | 'llm-model' | 'llm-key' | 'ollama-url' | 'jina-key' | 'done';
 
 type InitAppProps = {
   onCancel: VoidFunction;
@@ -15,7 +17,9 @@ export const InitApp: FC<InitAppProps> = ({ onCancel }) => {
   const [step, setStep] = useState<SettingsStep>('menu');
   const [llmKey, setLlmKey] = useState(config.get('llmApiKey') || '');
   const [jinaKey, setJinaKey] = useState(config.get('jinaApiKey') || '');
+  const [selectedProvider, setSelectedProvider] = useState<LlmProviderId>(config.get('llmProvider'));
   const [ollamaUrl, setOllamaUrl] = useState(config.get('ollamaUrl') || 'http://localhost:11434');
+  const providerDefinition = getProviderDefinition(selectedProvider);
 
   const handleMenuSelect = (item: { value: string }) => {
     if (item.value === 'llm') setStep('llm-provider');
@@ -23,13 +27,30 @@ export const InitApp: FC<InitAppProps> = ({ onCancel }) => {
     if (item.value === 'back') onCancel();
   };
 
-  const handleModelSelect = (item: { value: string }) => {
-    config.set('preferredModel', item.value as any);
-    if (item.value === 'openai' || item.value === 'deepseek') {
-      setStep('llm-key');
-    } else {
+  const handleProviderSelect = (item: { value: string }) => {
+    const nextProvider = item.value as LlmProviderId;
+    const nextDefinition = getProviderDefinition(nextProvider);
+
+    setSelectedProvider(nextProvider);
+    config.set('llmProvider', nextProvider);
+    config.set('llmModel', nextDefinition.defaultModel);
+    setStep('llm-model');
+  };
+
+  const handleLlmModelSelect = (item: { value: string }) => {
+    config.set('llmModel', item.value);
+
+    if (providerDefinition.requiresBaseUrl) {
       setStep('ollama-url');
+      return;
     }
+
+    if (providerDefinition.requiresApiKey) {
+      setStep('llm-key');
+      return;
+    }
+
+    setStep('done');
   };
 
   const handleLlmSubmit = (value: string) => {
@@ -71,19 +92,31 @@ export const InitApp: FC<InitAppProps> = ({ onCancel }) => {
         <Box flexDirection="column">
           <Text>Select LLM provider:</Text>
           <SelectInput
-            items={[
-              { label: 'OpenAI (GPT-4o)', value: 'openai' },
-              { label: 'DeepSeek (Official)', value: 'deepseek' },
-              { label: 'Local Ollama', value: 'ollama' },
-            ]}
-            onSelect={handleModelSelect}
+            items={llmProviders.map((provider) => ({
+              label: `${provider.displayName} (${provider.models[0]?.label || provider.defaultModel})`,
+              value: provider.id,
+            }))}
+            onSelect={handleProviderSelect}
+          />
+        </Box>
+      )}
+
+      {step === 'llm-model' && (
+        <Box flexDirection="column">
+          <Text>Select {providerDefinition.displayName} model:</Text>
+          <SelectInput
+            items={providerDefinition.models.map((model) => ({
+              label: model.label,
+              value: model.id,
+            }))}
+            onSelect={handleLlmModelSelect}
           />
         </Box>
       )}
 
       {step === 'llm-key' && (
         <Box flexDirection="column">
-          <Text>Enter LLM API key:</Text>
+          <Text>{providerDefinition.keyLabel || 'Enter LLM API key:'}</Text>
           <TextInput value={llmKey} onChange={setLlmKey} onSubmit={handleLlmSubmit} mask="*" />
         </Box>
       )}

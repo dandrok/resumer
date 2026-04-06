@@ -3,10 +3,10 @@ import fs from 'fs';
 import { generateText } from 'ai';
 import { mdToPdf } from 'md-to-pdf';
 import { resumeStyles } from '../assets/resumeStyles';
+import { getLlm } from '../llm';
 import { AnalysisSchema, buildInterviewQuestions, formatInterviewAnswers, parseJsonResponse } from '../tailoring/helpers';
 import { buildAnalysisPrompt, buildGenerationPrompt } from '../tailoring/prompts';
 import type { AnalysisResult, InterviewQuestion, Phase } from '../tailoring/types';
-import { getLlm } from '../utils/llm';
 import { parsePdf } from '../utils/pdf';
 import { scrapeJobDescription } from '../utils/scraper';
 

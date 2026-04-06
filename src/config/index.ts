@@ -1,17 +1,24 @@
 import Conf, { Schema } from 'conf';
+import type { LlmProviderId } from '../llm/types';
 
 export type Config = {
   llmApiKey?: string;
   jinaApiKey?: string;
+  llmModel: string;
+  llmProvider: LlmProviderId;
   ollamaUrl?: string;
-  preferredModel: 'openai' | 'ollama' | 'deepseek';
 };
 
 const schema: Schema<Config> = {
   llmApiKey: { type: 'string' },
   jinaApiKey: { type: 'string' },
+  llmModel: { type: 'string', default: 'gpt-4o' },
+  llmProvider: {
+    type: 'string',
+    default: 'openai',
+    enum: ['anthropic', 'deepseek', 'google', 'mistral', 'ollama', 'openai', 'xai'],
+  },
   ollamaUrl: { type: 'string', default: 'http://localhost:11434' },
-  preferredModel: { type: 'string', default: 'openai', enum: ['openai', 'ollama', 'deepseek'] }
 };
 
 export const config = new Conf<Config>({

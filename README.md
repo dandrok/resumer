@@ -18,9 +18,9 @@ sudo npm install -g .
 
 ### Quick Setup & API Keys
 To use this tool, you will need a few API keys. Here are the recommended affordable options:
-- **LLM**: [DeepSeek API](https://platform.deepseek.com/) (Extremely affordable and high quality) or [OpenAI API](https://platform.openai.com/).
+- **LLM**: Supported providers include [OpenAI](https://platform.openai.com/), [Anthropic](https://console.anthropic.com/), [Google Gemini](https://aistudio.google.com/), [xAI](https://console.x.ai/), [Mistral](https://console.mistral.ai/), [DeepSeek](https://platform.deepseek.com/), and local [Ollama](https://ollama.com/).
 - **Scraper**: [Jina Reader API](https://jina.ai/reader/) (Free tier available, used to extract job descriptions).
-- **Local Option**: [Ollama](https://ollama.com/) (Run LLMs locally for 100% privacy and zero cost).
+- **Model Selection**: The settings flow lets you choose both the provider and the model before entering credentials.
 
 ### Development
 ```bash
@@ -42,7 +42,7 @@ flowchart LR
     G --> H[Export tailored PDF]
 ```
 
-1. **Setup**: Go to `App Settings` to configure your LLM provider (DeepSeek, OpenAI, or Ollama), your LLM key or Ollama URL, and optionally your Jina Reader API key.
+1. **Setup**: Go to `App Settings` to configure your LLM provider, choose a model, enter the provider key or Ollama URL, and optionally save your Jina Reader API key.
 2. **Tailor Resume**: Select `Tailor Resume`, navigate to your `.pdf` file using the built-in file explorer, and provide the job offer URL.
 3. **Analysis**: The app extracts the resume text, scrapes the job description, ranks recent roles to emphasize, and identifies weak or missing areas.
 4. **Interview**: Answer short follow-up questions about role scope, ownership, impact, and any relevant missing skills. This gives the model evidence instead of guessing.
@@ -63,7 +63,7 @@ flowchart LR
 
 ## Tech Stack
 - **Ink**: React-based Terminal UI.
-- **Vercel AI SDK**: Unified interface for DeepSeek, OpenAI, and Ollama.
+- **Vercel AI SDK**: Unified interface for OpenAI, Anthropic, Google Gemini, xAI, Mistral, DeepSeek, and Ollama.
 - **Jina Reader**: Markdown-based web scraping.
 - **pdf-parse**: PDF text extraction.
 - **md-to-pdf**: Professional PDF generation from Markdown.
