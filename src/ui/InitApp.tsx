@@ -3,6 +3,7 @@ import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
 import { config } from '../config';
+import { ScreenShell } from './ScreenShell';
 
 type SettingsStep = 'menu' | 'llm-provider' | 'llm-key' | 'ollama-url' | 'jina-key' | 'done';
 
@@ -54,60 +55,56 @@ export const InitApp: FC<InitAppProps> = ({ onCancel }) => {
   }, [step]);
 
   return (
-    <Box flexDirection="column" padding={1}>
-      <Text bold color="cyan">CONFIGURATION PANEL</Text>
+    <ScreenShell title="Settings" subtitle="Configure the LLM provider and optional Jina Reader access.">
+      {step === 'menu' && (
+        <SelectInput
+          items={[
+            { label: 'Configure LLM Provider', value: 'llm' },
+            { label: 'Configure Scraper Key', value: 'scraper' },
+            { label: 'Back to Main Menu', value: 'back' },
+          ]}
+          onSelect={handleMenuSelect}
+        />
+      )}
 
-      <Box marginTop={1}>
-        {step === 'menu' && (
+      {step === 'llm-provider' && (
+        <Box flexDirection="column">
+          <Text>Select LLM provider:</Text>
           <SelectInput
             items={[
-              { label: 'Configure LLM Provider', value: 'llm' },
-              { label: 'Configure Scraper Key', value: 'scraper' },
-              { label: 'Back to Main Menu', value: 'back' },
+              { label: 'OpenAI (GPT-4o)', value: 'openai' },
+              { label: 'DeepSeek (Official)', value: 'deepseek' },
+              { label: 'Local Ollama', value: 'ollama' },
             ]}
-            onSelect={handleMenuSelect}
+            onSelect={handleModelSelect}
           />
-        )}
+        </Box>
+      )}
 
-        {step === 'llm-provider' && (
-          <Box flexDirection="column">
-            <Text>Select LLM Provider:</Text>
-            <SelectInput
-              items={[
-                { label: 'OpenAI (GPT-4o)', value: 'openai' },
-                { label: 'DeepSeek (Official)', value: 'deepseek' },
-                { label: 'Local Ollama', value: 'ollama' },
-              ]}
-              onSelect={handleModelSelect}
-            />
-          </Box>
-        )}
+      {step === 'llm-key' && (
+        <Box flexDirection="column">
+          <Text>Enter LLM API key:</Text>
+          <TextInput value={llmKey} onChange={setLlmKey} onSubmit={handleLlmSubmit} mask="*" />
+        </Box>
+      )}
 
-        {step === 'llm-key' && (
-          <Box flexDirection="column">
-            <Text>Enter LLM API Key:</Text>
-            <TextInput value={llmKey} onChange={setLlmKey} onSubmit={handleLlmSubmit} mask="*" />
-          </Box>
-        )}
+      {step === 'ollama-url' && (
+        <Box flexDirection="column">
+          <Text>Enter Ollama base URL:</Text>
+          <TextInput value={ollamaUrl} onChange={setOllamaUrl} onSubmit={handleOllamaSubmit} />
+        </Box>
+      )}
 
-        {step === 'ollama-url' && (
-          <Box flexDirection="column">
-            <Text>Enter Ollama Base URL:</Text>
-            <TextInput value={ollamaUrl} onChange={setOllamaUrl} onSubmit={handleOllamaSubmit} />
-          </Box>
-        )}
+      {step === 'jina-key' && (
+        <Box flexDirection="column">
+          <Text>Enter Jina Reader API key:</Text>
+          <TextInput value={jinaKey} onChange={setJinaKey} onSubmit={handleJinaSubmit} mask="*" />
+        </Box>
+      )}
 
-        {step === 'jina-key' && (
-          <Box flexDirection="column">
-            <Text>Enter Jina Reader API Key:</Text>
-            <TextInput value={jinaKey} onChange={setJinaKey} onSubmit={handleJinaSubmit} mask="*" />
-          </Box>
-        )}
-
-        {step === 'done' && (
-          <Text color="green">SUCCESS: Configuration updated.</Text>
-        )}
-      </Box>
-    </Box>
+      {step === 'done' && (
+        <Text color="green">Configuration updated.</Text>
+      )}
+    </ScreenShell>
   );
 };

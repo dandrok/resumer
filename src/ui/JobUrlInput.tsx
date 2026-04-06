@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
-
+import { ScreenShell } from './ScreenShell';
 
 type JobUrlInputProps = {
   onSubmit: (url: string) => void;
@@ -12,19 +12,33 @@ export const JobUrlInput: FC<JobUrlInputProps> = ({ onSubmit, onCancel }) => {
   const [url, setUrl] = useState('');
 
   const handleSubmit = (value: string) => {
-    if (value.startsWith('http')) {
-      onSubmit(value);
+    const trimmedValue = value.trim();
+
+    if (trimmedValue === '' || trimmedValue.toLowerCase() === 'back') {
+      onCancel();
+      return;
+    }
+
+    if (trimmedValue.startsWith('http')) {
+      onSubmit(trimmedValue);
     }
   };
 
   return (
-    <Box flexDirection="column" padding={1}>
-      <Text bold>Job Offer Details</Text>
+    <ScreenShell
+      title="Job Offer"
+      subtitle="Paste the public job URL to scrape the description, or go back to resume selection."
+    >
       <Box marginTop={1}>
-        <Text> [URL] ❯ </Text>
+        <Text>[URL] ❯ </Text>
         <TextInput value={url} onChange={setUrl} onSubmit={handleSubmit} />
       </Box>
-      <Text italic color="gray" > Enter the URL to scrape the job description </Text>
-    </Box>
+      <Box marginTop={1}>
+        <Text italic color="gray">Press Enter to continue once the URL starts with `http`.</Text>
+      </Box>
+      <Box marginTop={1}>
+        <Text color="gray">Submit `back` or an empty line to return to resume selection.</Text>
+      </Box>
+    </ScreenShell>
   );
 };

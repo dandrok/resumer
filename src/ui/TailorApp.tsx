@@ -3,6 +3,7 @@ import { Box, Spacer, Text, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
+import { ScreenShell } from './ScreenShell';
 import { useTailorFlow } from './useTailorFlow';
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   jobUrl: string;
 }
 
-const REVIEW_PREVIEW_LINES = 26;
+const REVIEW_LINES_PER_PAGE = 26;
 
 export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
   const { exit } = useApp();
@@ -29,6 +30,7 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [reviewMode, setReviewMode] = useState<'actions' | 'revision'>('actions');
+  const [reviewPage, setReviewPage] = useState(0);
   const [revisionNote, setRevisionNote] = useState('');
 
   useEffect(() => {
@@ -39,6 +41,7 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
 
     if (phase === 'reviewing') {
       setReviewMode('actions');
+      setReviewPage(0);
       setRevisionNote('');
     }
   }, [phase]);
@@ -64,7 +67,24 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
     startGeneration();
   };
 
-  const handleReviewAction = (item: { value: 'approve' | 'revise' | 'cancel' }) => {
+  const reviewLines = generatedMarkdown.split('\n');
+  const totalReviewPages = Math.max(1, Math.ceil(reviewLines.length / REVIEW_LINES_PER_PAGE));
+  const currentReviewPage = Math.min(reviewPage, totalReviewPages - 1);
+  const pageStart = currentReviewPage * REVIEW_LINES_PER_PAGE;
+  const pageEnd = pageStart + REVIEW_LINES_PER_PAGE;
+  const previewLines = reviewLines.slice(pageStart, pageEnd);
+
+  const handleReviewAction = (item: { value: 'previous' | 'next' | 'approve' | 'revise' | 'cancel' }) => {
+    if (item.value === 'previous') {
+      setReviewPage((prev) => Math.max(0, prev - 1));
+      return;
+    }
+
+    if (item.value === 'next') {
+      setReviewPage((prev) => Math.min(totalReviewPages - 1, prev + 1));
+      return;
+    }
+
     if (item.value === 'approve') {
       approveMarkdown();
       return;
@@ -78,12 +98,14 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
     exit();
   };
 
-  const previewLines = generatedMarkdown.split('\n').slice(0, REVIEW_PREVIEW_LINES).join('\n');
   const currentQuestion = interviewQuestions[currentQuestionIndex];
 
   return (
-    <Box flexDirection="column" padding={1} borderStyle="round" borderColor="blue">
-      <Text bold color="blue">RESUMER - Tailoring Session</Text>
+    <ScreenShell
+      title="Tailoring Session"
+      subtitle="Extract, analyze, enrich, review, and export a one-page tailored resume."
+      titleColor="blue"
+    >
       <Spacer />
 
       {phase === 'extracting' && (
@@ -130,9 +152,11 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
       {phase === 'reviewing' && (
         <Box flexDirection="column">
           <Text color="green" bold>Draft ready for review</Text>
-          <Text color="gray">Previewing the first {REVIEW_PREVIEW_LINES} lines of Markdown before export.</Text>
+          <Text color="gray">
+            Reviewing Markdown page {currentReviewPage + 1} of {totalReviewPages} before export.
+          </Text>
           <Box marginTop={1} flexDirection="column" borderStyle="round" borderColor="gray" padding={1}>
-            {previewLines.split('\n').map((line, index) => (
+            {previewLines.map((line, index) => (
               <Text key={`${index}-${line}`}>{line || ' '}</Text>
             ))}
           </Box>
@@ -142,6 +166,8 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
               <Text color="cyan">Choose what to do with this draft:</Text>
               <SelectInput
                 items={[
+                  ...(currentReviewPage > 0 ? [{ label: 'Previous page', value: 'previous' as const }] : []),
+                  ...(currentReviewPage < totalReviewPages - 1 ? [{ label: 'Next page', value: 'next' as const }] : []),
                   { label: 'Approve and export PDF', value: 'approve' as const },
                   { label: 'Revise draft with feedback', value: 'revise' as const },
                   { label: 'Cancel tailoring session', value: 'cancel' as const },
@@ -183,6 +209,6 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
           <Text color="red">{error}</Text>
         </Box>
       )}
-    </Box>
+    </ScreenShell>
   );
 };

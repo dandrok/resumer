@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
+import { ScreenShell } from './ScreenShell';
 
 type MainMenuProps = {
   onSelect: (value: 'tailor' | 'settings' | 'exit') => void;
@@ -18,11 +18,11 @@ export const MainMenu: FC<MainMenuProps> = ({ onSelect }) => {
   };
 
   return (
-    <Box flexDirection="column" padding={1}>
-      <Text bold color="cyan">Resumer v0.1.0</Text>
-      <Box marginTop={1}>
-        <SelectInput items={items} onSelect={handleSelect} />
-      </Box>
-    </Box>
+    <ScreenShell
+      title="Resumer"
+      subtitle="AI-powered CLI/TUI resume tailoring for software-engineering roles."
+    >
+      <SelectInput items={items} onSelect={handleSelect} />
+    </ScreenShell>
   );
 };

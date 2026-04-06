@@ -1,8 +1,8 @@
 import { FC, useState, useEffect } from 'react';
-import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import fs from 'fs';
 import path from 'path';
+import { ScreenShell } from './ScreenShell';
 
 type FileNavigatorProps = {
   onSelect: (filePath: string) => void;
@@ -61,12 +61,8 @@ export const FileNavigator: FC<FileNavigatorProps> = ({ onSelect, onCancel }) =>
   };
 
   return (
-    <Box flexDirection="column" padding={1}>
-      <Text bold color="yellow">NAVIGATE TO YOUR RESUME</Text>
-      <Text color="gray">pwd: {currentDir}</Text>
-      <Box marginTop={1}>
-        <SelectInput items={items} onSelect={handleSelect} />
-      </Box>
-    </Box>
+    <ScreenShell title="Select Resume" subtitle={`Current directory: ${currentDir}`}>
+      <SelectInput items={items} onSelect={handleSelect} />
+    </ScreenShell>
   );
 };
