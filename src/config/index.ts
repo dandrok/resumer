@@ -1,11 +1,11 @@
 import Conf, { Schema } from 'conf';
 
-export interface Config {
+export type Config = {
   llmApiKey?: string;
   jinaApiKey?: string;
   ollamaUrl?: string;
   preferredModel: 'openai' | 'ollama' | 'deepseek';
-}
+};
 
 const schema: Schema<Config> = {
   llmApiKey: { type: 'string' },

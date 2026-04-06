@@ -31,10 +31,23 @@ npm run dev
 
 Simply run `resumer` (or `npm run dev`) to start the interactive wizard.
 
-1. **Setup**: Go to `App Settings` to configure your LLM provider (DeepSeek, OpenAI, or Ollama) and your Jina Reader API key.
+```mermaid
+flowchart LR
+    A[Open Resumer] --> B[Configure settings]
+    B --> C[Select resume PDF]
+    C --> D[Paste job URL]
+    D --> E[Analyze resume and job]
+    E --> F[Answer impact and skill questions]
+    F --> G[Review Markdown draft]
+    G --> H[Export tailored PDF]
+```
+
+1. **Setup**: Go to `App Settings` to configure your LLM provider (DeepSeek, OpenAI, or Ollama), your LLM key or Ollama URL, and optionally your Jina Reader API key.
 2. **Tailor Resume**: Select `Tailor Resume`, navigate to your `.pdf` file using the built-in file explorer, and provide the job offer URL.
-3. **Interview**: Answer a few questions about missing skills to help the AI refine your resume without hallucinating.
-4. **Result**: Your tailored resume will be saved as `your-cv_tailored.pdf` in the same directory.
+3. **Analysis**: The app extracts the resume text, scrapes the job description, ranks recent roles to emphasize, and identifies weak or missing areas.
+4. **Interview**: Answer short follow-up questions about role scope, ownership, impact, and any relevant missing skills. This gives the model evidence instead of guessing.
+5. **Review**: The app generates a Markdown draft first, shows it in the TUI, and lets you approve it or request a revision before export.
+6. **Result**: The approved resume is rendered to PDF and saved as `your-cv_tailored.pdf` in the same directory.
 
 ## Security & Privacy
 - **Local Storage**: Your API keys are stored only on your local machine using the [`conf`](https://github.com/sindresorhus/conf) library. They are saved in your system's standard config directory (e.g., `~/.config/resumer-nodejs/`).
