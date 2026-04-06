@@ -11,3 +11,25 @@ export const parsePdf = async (path: string): Promise<string> => {
   // result.text contains the concatenated text from all pages
   return result.text;
 };
+
+export const validateResumePdf = async (path: string): Promise<void> => {
+  if (!fs.existsSync(path)) {
+    throw new Error('Selected file does not exist.');
+  }
+
+  if (!path.toLowerCase().endsWith('.pdf')) {
+    throw new Error('Selected file must be a PDF.');
+  }
+
+  let extractedText = '';
+
+  try {
+    extractedText = await parsePdf(path);
+  } catch (err: any) {
+    throw new Error(`Could not read the PDF. ${err.message || String(err)}`);
+  }
+
+  if (!extractedText.trim()) {
+    throw new Error('PDF contains no extractable text.');
+  }
+};

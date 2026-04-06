@@ -5,6 +5,7 @@ import path from 'path';
 import { ScreenShell } from './ScreenShell';
 
 type FileNavigatorProps = {
+  error?: string | null;
   onSelect: (filePath: string) => void;
   onCancel: VoidFunction;
 };
@@ -15,7 +16,7 @@ type FileItem = {
   isDirectory: boolean;
 };
 
-export const FileNavigator: FC<FileNavigatorProps> = ({ onSelect, onCancel }) => {
+export const FileNavigator: FC<FileNavigatorProps> = ({ error, onSelect, onCancel }) => {
   const [currentDir, setCurrentDir] = useState(process.cwd());
   const [items, setItems] = useState<FileItem[]>([]);
 
@@ -62,6 +63,11 @@ export const FileNavigator: FC<FileNavigatorProps> = ({ onSelect, onCancel }) =>
 
   return (
     <ScreenShell title="Select Resume" subtitle={`Current directory: ${currentDir}`}>
+      {error ? (
+        <Box marginBottom={1}>
+          <Text color="red">{error}</Text>
+        </Box>
+      ) : null}
       <SelectInput items={items} onSelect={handleSelect} />
     </ScreenShell>
   );
