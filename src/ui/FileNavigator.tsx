@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from 'react';
+import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import fs from 'fs';
 import path from 'path';
