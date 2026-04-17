@@ -49,6 +49,11 @@ flowchart LR
 5. **Review**: The app generates a Markdown draft first, shows it in the TUI, and lets you approve it or request a revision before export.
 6. **Result**: The approved resume is rendered to PDF and saved as `your-cv_tailored.pdf` in the same directory.
 
+### Ollama Notes
+- Ollama support is currently limited to the hardcoded model options exposed in the settings UI.
+- At the moment those options are `llama3`, `qwen3.5:9b`, and `mistral`.
+- If you have a different Ollama model installed locally, the app will not let you select it from the TUI without a code change.
+
 ## Security & Privacy
 - **Local Storage**: Your API keys are stored only on your local machine using the [`conf`](https://github.com/sindresorhus/conf) library. They are saved in your system's standard config directory (e.g., `~/.config/resumer-nodejs/`).
 - **How it works**: The app initializes a local JSON file to persist your settings across sessions:

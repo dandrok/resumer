@@ -95,7 +95,7 @@ export const llmProviders: LlmProviderDefinition[] = [
     requiresBaseUrl: true,
     models: [
       { id: 'llama3', label: 'Llama 3' },
-      { id: 'qwen2.5', label: 'Qwen 2.5' },
+      { id: 'qwen3.5:9b', label: 'Qwen 3.5 9B' },
       { id: 'mistral', label: 'Mistral' },
     ],
   },
