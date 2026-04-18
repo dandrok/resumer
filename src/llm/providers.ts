@@ -97,6 +97,8 @@ export const llmProviders: LlmProviderDefinition[] = [
       { id: 'llama3', label: 'Llama 3' },
       { id: 'qwen3.5:9b', label: 'Qwen 3.5 9B' },
       { id: 'mistral', label: 'Mistral' },
+      { id: 'gemma4:e4b', label: 'Gemma 4' },
+
     ],
   },
 ];
