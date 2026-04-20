@@ -6,6 +6,7 @@ import { config } from '../config';
 import { getProviderDefinition, llmProviders } from '../llm/providers';
 import type { LlmProviderId } from '../llm/types';
 import { ScreenShell } from './ScreenShell';
+import { LlmKey } from './steps/LlmKey';
 
 type SettingsStep = 'menu' | 'llm-provider' | 'llm-model' | 'llm-key' | 'ollama-url' | 'jina-key' | 'done';
 
@@ -115,10 +116,7 @@ export const InitApp: FC<InitAppProps> = ({ onCancel }) => {
       )}
 
       {step === 'llm-key' && (
-        <Box flexDirection="column">
-          <Text>{providerDefinition.keyLabel || 'Enter LLM API key:'}</Text>
-          <TextInput value={llmKey} onChange={setLlmKey} onSubmit={handleLlmSubmit} mask="*" />
-        </Box>
+        <LlmKey onChange={setLlmKey} onSubmit={handleLlmSubmit} providerDefinition={providerDefinition} value={llmKey} />
       )}
 
       {step === 'ollama-url' && (
