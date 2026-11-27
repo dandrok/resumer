@@ -21,6 +21,7 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
     error,
     generatedMarkdown,
     interviewQuestions,
+    outputPath,
     phase,
     requestRevision,
     setInterviewAnswers,
@@ -199,7 +200,7 @@ export const TailorApp: React.FC<Props> = ({ resumePath, jobUrl }) => {
 
       {phase === 'done' && (
         <Box>
-          <Text color="green" bold>Success! Tailored resume saved as: {resumePath.replace('.pdf', '_tailored.pdf')}</Text>
+          <Text color="green" bold>Success! Tailored resume saved as: {outputPath}</Text>
         </Box>
       )}
 

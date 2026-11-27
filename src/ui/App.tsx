@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useApp } from 'ink';
 import { MainMenu } from './MainMenu';
 import { FileNavigator } from './FileNavigator';
 import { JobUrlInput } from './JobUrlInput';
@@ -6,18 +7,19 @@ import { TailorApp } from './TailorApp';
 import { InitApp } from './InitApp';
 import { validateResumePdf } from '../utils/pdf';
 
-type AppPhase = 'menu' | 'select-cv' | 'input-url' | 'tailoring' | 'settings' | 'exit';
+type AppPhase = 'menu' | 'select-cv' | 'input-url' | 'tailoring' | 'settings';
 
 export const App: FC = () => {
+  const { exit } = useApp();
   const [phase, setPhase] = useState<AppPhase>('menu');
   const [fileError, setFileError] = useState<string | null>(null);
   const [resumePath, setResumePath] = useState('');
   const [jobUrl, setJobUrl] = useState('');
 
-  const handleMenuSelect = (value: string) => {
+  const handleMenuSelect = (value: 'tailor' | 'settings' | 'exit') => {
     if (value === 'tailor') setPhase('select-cv');
     if (value === 'settings') setPhase('settings');
-    if (value === 'exit') setPhase('exit');
+    if (value === 'exit') exit();
   };
 
   const handleCvSelect = async (path: string) => {

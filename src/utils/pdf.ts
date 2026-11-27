@@ -1,5 +1,13 @@
 import fs from 'fs';
+import path from 'path';
 import { PDFParse } from 'pdf-parse';
+
+/** Derives the `_tailored.pdf` sibling output path without mutating parent directory names. */
+export const getTailoredPdfPath = (resumePath: string): string => {
+  const parsed = path.parse(resumePath);
+  const baseName = parsed.ext.toLowerCase() === '.pdf' ? parsed.name : parsed.base;
+  return path.join(parsed.dir, `${baseName}_tailored.pdf`);
+};
 
 export const parsePdf = async (path: string): Promise<string> => {
   const dataBuffer = fs.readFileSync(path);
