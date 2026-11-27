@@ -7,10 +7,11 @@ import { getLlm } from '../llm';
 import { AnalysisSchema, buildInterviewQuestions, formatInterviewAnswers, parseJsonResponse } from '../tailoring/helpers';
 import { buildAnalysisPrompt, buildGenerationPrompt } from '../tailoring/prompts';
 import type { AnalysisResult, InterviewQuestion, Phase } from '../tailoring/types';
-import { parsePdf } from '../utils/pdf';
+import { getTailoredPdfPath, parsePdf } from '../utils/pdf';
 import { scrapeJobDescription } from '../utils/scraper';
 
 export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => void) => {
+  const outputPath = getTailoredPdfPath(resumePath);
   const [phase, setPhase] = useState<Phase>('extracting');
   const [error, setError] = useState<string | null>(null);
   const [cvText, setCvText] = useState('');
@@ -104,7 +105,7 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
         throw new Error('PDF export returned no content.');
       }
 
-      fs.writeFileSync(resumePath.replace('.pdf', '_tailored.pdf'), pdfResult.content);
+      fs.writeFileSync(outputPath, pdfResult.content);
       setPhase('done');
       setTimeout(() => exit(), 2000);
     } catch (err: any) {
@@ -138,7 +139,7 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
     }
 
     runExport();
-  }, [phase, generatedMarkdown, resumePath, exit]);
+  }, [phase, generatedMarkdown, outputPath, exit]);
 
   const startGeneration = () => {
     setPhase('generating');
@@ -160,6 +161,7 @@ export const useTailorFlow = (resumePath: string, jobUrl: string, exit: () => vo
     generatedMarkdown,
     interviewAnswers,
     interviewQuestions,
+    outputPath,
     phase,
     requestRevision,
     setInterviewAnswers,
